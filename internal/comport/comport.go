@@ -36,7 +36,9 @@ func (c *Comport) Assemble() {
 		select {
 		case tmp := <-c.ch:
 			str = append(str, tmp...)
-			time.Sleep(20 * time.Millisecond)
+
+			//延遲合併速度，避免速度太快導致判斷為已經中斷傳輸
+			time.Sleep(200 * time.Millisecond)
 		default:
 			if len(str) > 0 {
 				currentTime := time.Now()
@@ -60,6 +62,8 @@ func (c *Comport) Read() {
 	buf := make([]byte, 128)
 	for {
 		for {
+			//延遲讀取速度，避免讀取太快導致讀取到同一個數值
+			time.Sleep(100 * time.Millisecond)
 			n, err := c.conn.Read(buf)
 			if err != nil {
 				log.Println("ERROR: Failed to read data")
