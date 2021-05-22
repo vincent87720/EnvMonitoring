@@ -36,7 +36,7 @@ func main() {
 	//測試資料庫連線
 	mydb := &mysql.MySQL{}
 	mydb.SetConnectionString(dbconstr)
-	_, err := mydb.OpenDatabase()
+	err := mydb.OpenDatabase()
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
