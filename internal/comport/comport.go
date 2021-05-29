@@ -12,11 +12,12 @@ import (
 )
 
 type Comport struct {
-	portName     string
-	baudRate     int
-	conn         *serial.Port
-	ch           chan []byte
-	CombinedChan chan sensordata.SensorData
+	portName           string
+	baudRate           int
+	conn               *serial.Port
+	ch                 chan []byte
+	CombinedChan       chan sensordata.SensorData
+	funcAssembleStatus bool //紀錄assemble function的開啟或關閉狀態
 }
 
 func New(portName string, baudRate int) (c *Comport) {
@@ -29,7 +30,15 @@ func New(portName string, baudRate int) (c *Comport) {
 	return c
 }
 
-func (c *Comport) Assemble() {
+func (c *Comport) assemble() {
+	stopchan := make(chan bool, 2)
+	defer close(stopchan)
+
+	//三秒鐘後停止這個goroutine
+	go func() {
+		time.Sleep(3 * time.Second)
+		stopchan <- true
+	}()
 
 	str := make([]byte, 0)
 	for {
@@ -39,6 +48,9 @@ func (c *Comport) Assemble() {
 
 			//延遲合併速度，避免速度太快導致判斷為已經中斷傳輸
 			time.Sleep(200 * time.Millisecond)
+		case <-stopchan:
+			c.funcAssembleStatus = false
+			return
 		default:
 			if len(str) > 0 {
 				currentTime := time.Now()
@@ -69,6 +81,11 @@ func (c *Comport) Read() {
 				log.Println("ERROR: Failed to read data")
 				c.Connect()
 				continue
+			}
+			if c.funcAssembleStatus == false {
+				//放出一個goroutine用於組裝從buffer接收到的字串
+				go c.assemble()
+				c.funcAssembleStatus = true
 			}
 
 			c.ch <- buf[:n]

@@ -24,9 +24,6 @@ func main() {
 	//以portName和baudRate建立一個Comport
 	com := comport.New(s.GetPortName(), s.GetBaudRate())
 
-	//放出一個goroutine用於組裝從buffer接收到的字串
-	go com.Assemble()
-
 	//與Serial port進行連線
 	receiver.Connect(com)
 
