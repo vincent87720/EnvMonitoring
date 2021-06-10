@@ -11,9 +11,9 @@ type T struct {
 	Port struct {
 		Name     string `yaml:"name"`
 		BaudRate int    `yaml:"baudRate"`
-		DataBits int    `yaml:"dataBits"`
+		DataBits byte   `yaml:"dataBits"`
 		Parity   string `yaml:"parity"`
-		StopBits int    `yaml:"stopBits"`
+		StopBits string `yaml:"stopBits"`
 	}
 	Database struct {
 		Host     string `yaml:"host"`
@@ -53,6 +53,18 @@ func (s *Settings) GetPortName() string {
 
 func (s *Settings) GetBaudRate() int {
 	return s.t.Port.BaudRate
+}
+
+func (s *Settings) GetDataBits() byte {
+	return s.t.Port.DataBits
+}
+
+func (s *Settings) GetParity() string {
+	return s.t.Port.Parity
+}
+
+func (s *Settings) GetStopBits() string {
+	return s.t.Port.StopBits
 }
 
 func (s *Settings) GetDBConnectionString() string {

@@ -3,8 +3,8 @@ port:
   name: /dev/ttyUSB0
   baudRate: 9600
   dataBits: 8
-  parity: None
-  stopBits: 1
+  parity: ParityNone
+  stopBits: Stop1
 database:
   host: 127.0.0.1:3306
   dbname: yourDatabaseName

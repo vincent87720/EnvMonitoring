@@ -14,16 +14,46 @@ import (
 type Comport struct {
 	portName           string
 	baudRate           int
+	dataBits           byte
+	parity             serial.Parity
+	stopBits           serial.StopBits
 	conn               *serial.Port
 	ch                 chan []byte
 	CombinedChan       chan sensordata.SensorData
 	funcAssembleStatus bool //紀錄assemble function的開啟或關閉狀態
 }
 
-func New(portName string, baudRate int) (c *Comport) {
+func New(portName string, baudRate int, dataBits byte, parity string, stopBits string) (c *Comport) {
+	var p serial.Parity
+	switch parity {
+	case "ParityNone":
+		p = serial.ParityNone
+	case "ParityOdd":
+		p = serial.ParityOdd
+	case "ParityEven":
+		p = serial.ParityEven
+	case "ParityMark":
+		p = serial.ParityMark
+	case "ParitySpace":
+		p = serial.ParitySpace
+	}
+
+	var s serial.StopBits
+	switch stopBits {
+	case "Stop1":
+		s = serial.Stop1
+	case "Stop1Half":
+		s = serial.Stop1Half
+	case "Stop2":
+		s = serial.Stop2
+	}
+
 	c = &Comport{
 		portName: portName,
 		baudRate: baudRate,
+		dataBits: dataBits,
+		parity:   p,
+		stopBits: s,
 	}
 	c.ch = make(chan []byte, 20)
 	c.CombinedChan = make(chan sensordata.SensorData, 20)
@@ -97,7 +127,7 @@ func (c *Comport) Read() {
 func (c *Comport) Connect() {
 
 	for {
-		cp := &serial.Config{Name: c.portName, Baud: c.baudRate}
+		cp := &serial.Config{Name: c.portName, Baud: c.baudRate, Size: c.dataBits, Parity: c.parity, StopBits: c.stopBits}
 		s, err := serial.OpenPort(cp)
 		if err != nil {
 			log.Println("ERROR: Unrecognize serial port")

@@ -22,7 +22,7 @@ func main() {
 
 	fmt.Println("Opening serial port...")
 	//以portName和baudRate建立一個Comport
-	com := comport.New(s.GetPortName(), s.GetBaudRate())
+	com := comport.New(s.GetPortName(), s.GetBaudRate(), s.GetDataBits(), s.GetParity(), s.GetStopBits())
 
 	//與Serial port進行連線
 	receiver.Connect(com)

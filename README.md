@@ -15,8 +15,8 @@ port:
   name: /dev/ttyUSB0 #填入serial port名稱 ex:/dev/ttyUSB0、COM3
   baudRate: 9600 #設定序列傳輸速率
   dataBits: 8 #設定資料位元組的長度
-  parity: N #設定同位位元，可以設定為N:ParityNone、O:ParityOdd、E:ParityEven、M:ParityMark、S:ParitySpace
-  stopBits: 1 #設定停止位元的數目
+  parity: ParityNone #設定同位位元，可以設定為ParityNone、ParityOdd、ParityEven、ParityMark、ParitySpace
+  stopBits: Stop1 #設定停止位元的數目，可以設定為Stop1、Stop1Half、Stop2
 database:
   host: 127.0.0.1:3306 #設定資料庫伺服器IP位址和埠號
   dbname: yourDatabaseName #設定資料庫名稱
